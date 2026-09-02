@@ -50,9 +50,9 @@ function App() {
           <div className="terminal__tab">Output</div>
         </div>
         <div className="terminal__output">
-          > Initializing VisualDSL React Engine...<br/>
-          > Components loaded successfully.<br/>
-          > Ready.
+          &gt; Initializing VisualDSL React Engine...<br/>
+          &gt; Components loaded successfully.<br/>
+          &gt; Ready.
         </div>
       </section>
 
