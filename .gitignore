@@ -1,36 +1,3 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
-venv/
-.pytest_cache/
-.ruff_cache/
-.mypy_cache/
-htmlcov/
-.coverage
-
-# Node / frontend
 node_modules/
-dist/
-build/
-.vite/
-
-# Env / secrets
+coverage/
 .env
-.env.*
-!.env.example
-
-# Editors / OS
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# Local data
-*.db
-*.sqlite3
