@@ -1,11 +1,22 @@
-# ИТиВП, Часть 2 — Лабораторная работа 1
+# ИТиВП, Часть 2 — Лабораторная работа 2
 
-Серверное приложение на Node.js/Express для управления коллекцией диаграмм проекта DiagramCode.
+Продолжение лабораторной работы 1: то же REST API для диаграмм DiagramCode, теперь поверх PostgreSQL через Sequelize вместо массива в памяти.
 
-## Запуск
+## Подготовка базы данных
+
+Создать бесплатный кластер PostgreSQL, например на [Neon](https://neon.tech) или [Supabase](https://supabase.com), и скопировать строку подключения.
+
+```bash
+cp .env.example .env
+# вписать DATABASE_URL в .env
+```
+
+## Установка и запуск
 
 ```bash
 npm install
+npm run migrate
+npm run seed
 npm run dev
 ```
 
@@ -17,7 +28,12 @@ npm run dev
 npm test
 ```
 
-Порог покрытия — 100% (branches/functions/lines/statements), настроен в `package.json`.
+Тесты используют SQLite в памяти (см. `config/config.js`, окружение `test`) — реальный PostgreSQL для их запуска не требуется. Порог покрытия — 100%.
+
+## Миграции
+
+- `migrations/20260101000000-create-diagrams.js` — создание таблицы `Diagrams`.
+- `migrations/20260101000100-add-status-to-diagrams.js` — добавление поля `status`.
 
 ## Эндпоинты
 
@@ -29,4 +45,4 @@ npm test
 | PUT    | /diagrams/:id   | обновить диаграмму           |
 | DELETE | /diagrams/:id   | удалить диаграмму            |
 
-Тело запроса для POST/PUT: `{ "title": "...", "notation": "erd", "dslContent": "..." }`.
+Тело запроса для POST/PUT: `{ "title": "...", "notation": "erd", "dslContent": "...", "status": "draft" }`.

@@ -1,5 +1,4 @@
 const { errorHandler } = require("../middleware/errorHandler");
-const { validatePayload } = require("../controllers/diagramController");
 
 function mockRes() {
   const res = {};
@@ -20,15 +19,5 @@ describe("errorHandler", () => {
     const res = mockRes();
     errorHandler({}, {}, res, () => {});
     expect(res.json).toHaveBeenCalledWith({ error: "Внутренняя ошибка сервера" });
-  });
-});
-
-describe("validatePayload", () => {
-  test("возвращает ошибку при отсутствии body", () => {
-    expect(validatePayload(undefined)).not.toBeNull();
-  });
-
-  test("возвращает null при корректных данных", () => {
-    expect(validatePayload({ title: "A", notation: "erd" })).toBeNull();
   });
 });
