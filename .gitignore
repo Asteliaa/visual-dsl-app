@@ -1,3 +1,4 @@
 node_modules/
 coverage/
 .env
+REPORT_screenshots_lab3/
