@@ -1,4 +1,5 @@
 const request = require("supertest");
+const { ValidationError } = require("sequelize");
 const createApp = require("../app");
 const { User, resetDb } = require("./setup");
 
@@ -90,6 +91,16 @@ describe("POST /auth/register", () => {
       .post("/auth/register")
       .send({ email: "user@example.com", password: VALID_PASSWORD });
     expect(res.status).toBe(500);
+  });
+
+  test("возвращает 400 при ошибке валидации на уровне модели", async () => {
+    jest
+      .spyOn(User, "create")
+      .mockRejectedValueOnce(new ValidationError("Validation error", [{ message: "email должен быть уникальным" }]));
+    const res = await request(app)
+      .post("/auth/register")
+      .send({ email: "user@example.com", password: VALID_PASSWORD });
+    expect(res.status).toBe(400);
   });
 });
 

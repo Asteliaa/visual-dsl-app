@@ -3,7 +3,7 @@ const Diagram = require("../models/Diagram");
 
 async function getAll(req, res, next) {
   try {
-    const diagrams = await Diagram.findAll();
+    const diagrams = await Diagram.findAll({ where: { userId: req.userId } });
     res.status(200).json(diagrams);
   } catch (err) {
     next(err);
@@ -12,7 +12,7 @@ async function getAll(req, res, next) {
 
 async function getById(req, res, next) {
   try {
-    const diagram = await Diagram.findByPk(req.params.id);
+    const diagram = await Diagram.findOne({ where: { id: req.params.id, userId: req.userId } });
     if (!diagram) {
       return res.status(404).json({ error: "Диаграмма не найдена" });
     }
@@ -24,7 +24,7 @@ async function getById(req, res, next) {
 
 async function create(req, res, next) {
   try {
-    const diagram = await Diagram.create(req.body);
+    const diagram = await Diagram.create({ ...req.body, userId: req.userId });
     res.status(201).json(diagram);
   } catch (err) {
     if (err instanceof ValidationError) {
@@ -36,7 +36,7 @@ async function create(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    const diagram = await Diagram.findByPk(req.params.id);
+    const diagram = await Diagram.findOne({ where: { id: req.params.id, userId: req.userId } });
     if (!diagram) {
       return res.status(404).json({ error: "Диаграмма не найдена" });
     }
@@ -52,7 +52,7 @@ async function update(req, res, next) {
 
 async function remove(req, res, next) {
   try {
-    const deletedCount = await Diagram.destroy({ where: { id: req.params.id } });
+    const deletedCount = await Diagram.destroy({ where: { id: req.params.id, userId: req.userId } });
     if (deletedCount === 0) {
       return res.status(404).json({ error: "Диаграмма не найдена" });
     }

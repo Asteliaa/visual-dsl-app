@@ -1,4 +1,4 @@
-process.env.JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret-for-jest";
+process.env.JWT_SECRET = "test-jwt-secret-for-jest";
 
 const sequelize = require("../models/db");
 const Diagram = require("../models/Diagram");
