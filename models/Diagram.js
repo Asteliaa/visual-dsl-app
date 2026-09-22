@@ -24,10 +24,6 @@ const Diagram = sequelize.define(
       allowNull: false,
       defaultValue: "draft",
     },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
   },
   { tableName: "Diagrams" },
 );

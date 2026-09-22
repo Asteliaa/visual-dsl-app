@@ -38,14 +38,14 @@ describe("GET /diagrams", () => {
     expect(res.body).toHaveLength(1);
   });
 
-  test("не возвращает диаграммы другого пользователя", async () => {
+  test("возвращает диаграммы, созданные любым авторизованным пользователем", async () => {
     await request(app)
       .post("/diagrams")
       .set("Authorization", `Bearer ${otherToken}`)
-      .send({ title: "Чужая", notation: "erd" });
+      .send({ title: "От другого пользователя", notation: "erd" });
     const res = await request(app).get("/diagrams").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([]);
+    expect(res.body).toHaveLength(1);
   });
 
   test("возвращает 500 при ошибке БД", async () => {
@@ -75,15 +75,16 @@ describe("GET /diagrams/:id", () => {
     expect(res.body.status).toBe("draft");
   });
 
-  test("возвращает 404 при обращении к чужой диаграмме", async () => {
+  test("возвращает диаграмму, созданную другим авторизованным пользователем", async () => {
     const created = await request(app)
       .post("/diagrams")
       .set("Authorization", `Bearer ${otherToken}`)
-      .send({ title: "Чужая", notation: "erd" });
+      .send({ title: "От другого пользователя", notation: "erd" });
     const res = await request(app)
       .get(`/diagrams/${created.body.id}`)
       .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
+    expect(res.body.title).toBe("От другого пользователя");
   });
 
   test("возвращает 500 при ошибке БД", async () => {
@@ -144,16 +145,17 @@ describe("PUT /diagrams/:id", () => {
     expect(res.status).toBe(404);
   });
 
-  test("возвращает 404 при попытке обновить чужую диаграмму", async () => {
+  test("обновляет диаграмму, созданную другим авторизованным пользователем", async () => {
     const created = await request(app)
       .post("/diagrams")
       .set("Authorization", `Bearer ${otherToken}`)
-      .send({ title: "Чужая", notation: "erd" });
+      .send({ title: "От другого пользователя", notation: "erd" });
     const res = await request(app)
       .put(`/diagrams/${created.body.id}`)
       .set("Authorization", `Bearer ${token}`)
-      .send({ title: "Взлом", notation: "erd" });
-    expect(res.status).toBe(404);
+      .send({ title: "Обновлено", notation: "erd" });
+    expect(res.status).toBe(200);
+    expect(res.body.title).toBe("Обновлено");
   });
 
   test("возвращает 400 при некорректных данных обновления", async () => {
@@ -201,15 +203,15 @@ describe("DELETE /diagrams/:id", () => {
     expect(res.status).toBe(404);
   });
 
-  test("возвращает 404 при попытке удалить чужую диаграмму", async () => {
+  test("удаляет диаграмму, созданную другим авторизованным пользователем", async () => {
     const created = await request(app)
       .post("/diagrams")
       .set("Authorization", `Bearer ${otherToken}`)
-      .send({ title: "Чужая", notation: "erd" });
+      .send({ title: "От другого пользователя", notation: "erd" });
     const res = await request(app)
       .delete(`/diagrams/${created.body.id}`)
       .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(204);
   });
 
   test("возвращает 500 при ошибке БД", async () => {
