@@ -1,7 +1,7 @@
 {
-  "name": "diagramcode-lab12",
+  "name": "diagramcode-lab23",
   "version": "1.0.0",
-  "description": "ITiVP Lab 2 - Sequelize ORM over PostgreSQL",
+  "description": "ITiVP Lab 3 - Authentication and authorization (bcrypt + JWT)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
