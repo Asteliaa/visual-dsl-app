@@ -21,3 +21,7 @@ xelatex report.tex
 Запускать нужно именно `xelatex` (не `pdflatex`), два раза. Рисунки берутся из `../screenshots/`.
 
 Файл сгенерирован скриптом из тех же данных, что и `.docx`; при правках текста меняйте оба варианта.
+
+## Overleaf
+
+Готовый архив: `overleaf-pz1.zip` (main.tex, 12 рисунков, latexmkrc). В Overleaf: New Project -> Upload Project -> выберите архив; компилятор XeLaTeX (задан в latexmkrc), главный файл main.tex. Шрифты Times New Roman и Courier New заменяются на метрически совместимые TeX Gyre Termes и TeX Gyre Cursor.
