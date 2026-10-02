@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+<h1>Редактирование диаграммы #<%= item.id %></h1>
+<% if (errors.length) { %>
+    <ul class="errors"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+<% } %>
+<form method="POST" action="/item/<%= item.id %>/edit<%= authQuery %>">
+    <label for="title">Название</label>
+    <input type="text" id="title" name="title" value="<%= item.title %>">
+    <label for="type">Тип</label>
+    <select id="type" name="type">
+        <% types.forEach(function (t) { %>
+            <option value="<%= t %>" <%= item.type === t ? 'selected' : '' %>><%= t %></option>
+        <% }); %>
+    </select>
+    <label for="dsl">DSL-код</label>
+    <textarea id="dsl" name="dsl" rows="6"><%= item.dsl %></textarea>
+    <button type="submit" class="btn">Сохранить</button>
+    <a href="/item/<%= item.id %><%= authQuery %>">Отмена</a>
+</form>
+<form method="POST" action="/item/<%= item.id %>/delete<%= authQuery %>" onsubmit="return confirm('Удалить диаграмму?')">
+    <button type="submit" class="btn" style="background:#b91c1c">Удалить</button>
+</form>
+<%- include('partials/footer') %>

@@ -1,19 +1,19 @@
 const express = require('express');
-const router = express.Router();
-const auth = require('../middlewares/auth');
- 
-const { diagrams } = require('../controllers/diagramController'); 
+const { requireAuth } = require('../middlewares/auth');
+const pages = require('../controllers/pageController');
 
-router.get('/', (req, res) => res.render('index', { items: diagrams }));
-router.get('/add', auth, (req, res) => res.render('add'));
-router.post('/add', auth, (req, res) => {
-    diagrams.push({ id: Date.now(), title: req.body.title, dsl: req.body.dsl });
-    res.redirect('/');
-});
-router.get('/item/:id', (req, res) => {
-    const item = diagrams.find(d => d.id == req.params.id);
-    if (!item) return res.status(404).render('404');
-    res.render('item', { item });
-});
+const router = express.Router();
+
+router.get('/', pages.index);
+router.get('/item/:id', pages.item);
+router.get('/login', pages.login);
+router.get('/logs', pages.logs);
+// Middleware requireAuth выполняется только для этих маршрутов.
+router.get('/add', requireAuth, pages.addForm);
+router.post('/add', requireAuth, pages.addSubmit);
+
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/debug/error', pages.crash);
+}
 
 module.exports = router;

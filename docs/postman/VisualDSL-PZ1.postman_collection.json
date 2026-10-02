@@ -1,0 +1,64 @@
+{
+  "info": {
+    "name": "VisualDSL - ПЗ1",
+    "description": "Запросы к REST API и HTML-страницам. Сервер: npm start (порт 5000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:5000" }],
+  "item": [
+    { "name": "GET список диаграмм (API)", "request": { "method": "GET", "url": "{{baseUrl}}/api/diagrams" } },
+    { "name": "GET поиск ?search=jwt (API)", "request": { "method": "GET", "url": "{{baseUrl}}/api/diagrams?search=jwt" } },
+    { "name": "GET диаграмма по id (API)", "request": { "method": "GET", "url": "{{baseUrl}}/api/diagrams/1" } },
+    {
+      "name": "POST создать диаграмму (API)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Новая диаграмма\",\n  \"type\": \"class\",\n  \"dsl\": \"class A {}\"\n}" },
+        "url": "{{baseUrl}}/api/diagrams"
+      }
+    },
+    {
+      "name": "POST валидация - пустой title (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"dsl\": \"x\" }" },
+        "url": "{{baseUrl}}/api/diagrams"
+      }
+    },
+    {
+      "name": "PUT обновить диаграмму (API)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Обновлено\",\n  \"dsl\": \"A-->B\"\n}" },
+        "url": "{{baseUrl}}/api/diagrams/1"
+      }
+    },
+    { "name": "DELETE удалить диаграмму (API, 204)", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/diagrams/2" } },
+    { "name": "GET несуществующий id (404 JSON)", "request": { "method": "GET", "url": "{{baseUrl}}/api/diagrams/999" } },
+    { "name": "GET главная страница (HTML)", "request": { "method": "GET", "url": "{{baseUrl}}/?auth=1" } },
+    { "name": "GET деталь (HTML)", "request": { "method": "GET", "url": "{{baseUrl}}/item/1?auth=1" } },
+    { "name": "GET /add без auth (302 -> /login)", "request": { "method": "GET", "url": "{{baseUrl}}/add" } },
+    { "name": "GET форма добавления (HTML)", "request": { "method": "GET", "url": "{{baseUrl}}/add?auth=1" } },
+    {
+      "name": "POST /add - добавить через форму (302)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "title", "value": "Из Postman" },
+            { "key": "type", "value": "state" },
+            { "key": "dsl", "value": "[*] --> A" }
+          ]
+        },
+        "url": "{{baseUrl}}/add?auth=1"
+      }
+    },
+    { "name": "GET страница 404 (HTML)", "request": { "method": "GET", "url": "{{baseUrl}}/no-such-page" } },
+    { "name": "GET страница 500 (HTML)", "request": { "method": "GET", "url": "{{baseUrl}}/debug/error" } }
+  ]
+}

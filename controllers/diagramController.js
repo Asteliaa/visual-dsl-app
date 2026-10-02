@@ -1,29 +1,17 @@
-let diagrams = [
-  {
-    id: 1,
-    title: 'Архитектура микросервисов',
-    type: 'flowchart',
-    dsl: 'graph TD; A[Client] --> B[API Gateway]; B --> C[Auth Service];',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 2,
-    title: 'Поток авторизации JWT',
-    type: 'sequence',
-    dsl: 'sequenceDiagram; User->>Server: Login; Server-->>User: Token;',
-    createdAt: new Date().toISOString()
-  }
-];
+// REST API: JSON-контроллер диаграмм. Данные берутся из общего хранилища.
+const store = require('../models/diagramStore');
 
-let nextId = 3;
+const parseId = (value) => (/^\d+$/.test(value) ? parseInt(value, 10) : NaN);
+const isFilled = (value) => typeof value === 'string' && value.trim() !== '';
 
 exports.getAllDiagrams = (req, res) => {
   const { search } = req.query;
+  const diagrams = store.getAll();
 
   if (search) {
-    const filtered = diagrams.filter(d =>
-      d.title.toLowerCase().includes(search.toLowerCase()) ||
-      d.type.toLowerCase().includes(search.toLowerCase())
+    const q = String(search).toLowerCase();
+    const filtered = diagrams.filter(
+      (d) => d.title.toLowerCase().includes(q) || d.type.toLowerCase().includes(q)
     );
     return res.status(200).json(filtered);
   }
@@ -32,88 +20,47 @@ exports.getAllDiagrams = (req, res) => {
 };
 
 exports.getDiagramById = (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseId(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: 'ID должен быть числом' });
 
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'ID должен быть числом' });
-  }
-
-  const diagram = diagrams.find(d => d.id === id);
-
-  if (!diagram) {
-    return res.status(404).json({ error: 'Диаграмма не найдена' });
-  }
+  const diagram = store.getById(id);
+  if (!diagram) return res.status(404).json({ error: 'Диаграмма не найдена' });
 
   res.status(200).json(diagram);
 };
 
 exports.createDiagram = (req, res) => {
-  const { title, type, dsl } = req.body;
+  const { title, type, dsl } = req.body || {};
 
-  if (!title || typeof title !== 'string' || !title.trim()) {
-    return res.status(400).json({ error: 'Поле "title" обязательно' });
-  }
+  if (!isFilled(title)) return res.status(400).json({ error: 'Поле "title" обязательно' });
+  if (!isFilled(dsl)) return res.status(400).json({ error: 'Поле "dsl" обязательно' });
 
-  if (!dsl || typeof dsl !== 'string' || !dsl.trim()) {
-    return res.status(400).json({ error: 'Поле "dsl" обязательно' });
-  }
-
-  const newDiagram = {
-    id: nextId++,
-    title: title.trim(),
-    type: type ? type.trim() : 'flowchart',
-    dsl: dsl.trim(),
-    createdAt: new Date().toISOString()
-  };
-
-  diagrams.push(newDiagram);
-  res.status(201).json(newDiagram);
+  res.status(201).json(store.create({ title, type: isFilled(type) ? type : undefined, dsl }));
 };
 
 exports.updateDiagram = (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseId(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: 'ID должен быть числом' });
 
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'ID должен быть числом' });
-  }
-
-  const index = diagrams.findIndex(d => d.id === id);
-
-  if (index === -1) {
+  if (!store.getById(id)) {
     return res.status(404).json({ error: 'Диаграмма для обновления не найдена' });
   }
 
-  const { title, type, dsl } = req.body;
-
-  if (!title || !dsl) {
+  const { title, type, dsl } = req.body || {};
+  if (!isFilled(title) || !isFilled(dsl)) {
     return res.status(400).json({ error: 'Для PUT обязательны поля "title" и "dsl"' });
   }
 
-  diagrams[index] = {
-    id,
-    title: title.trim(),
-    type: type ? type.trim() : diagrams[index].type,
-    dsl: dsl.trim(),
-    createdAt: diagrams[index].createdAt,
-    updatedAt: new Date().toISOString()
-  };
-
-  res.status(200).json(diagrams[index]);
+  res.status(200).json(store.update(id, { title, type: isFilled(type) ? type : undefined, dsl }));
 };
 
 exports.deleteDiagram = (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseId(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: 'ID должен быть числом' });
 
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'ID должен быть числом' });
-  }
-
-  const index = diagrams.findIndex(d => d.id === id);
-
-  if (index === -1) {
+  if (!store.remove(id)) {
     return res.status(404).json({ error: 'Диаграмма не найдена или уже удалена' });
   }
 
-  diagrams.splice(index, 1);
   res.status(204).send();
 };

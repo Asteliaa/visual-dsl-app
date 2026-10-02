@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<h1>Журнал запросов</h1>
+<p class="muted">Всего записей: <%= entries.length %>. Новые записи сверху.</p>
+
+<form method="GET" action="/logs" class="filters">
+    <% if (user.isAuth) { %><input type="hidden" name="auth" value="1"><% } %>
+    <select name="method">
+        <option value="">Все методы</option>
+        <% methods.forEach(function (m) { %>
+            <option value="<%= m %>" <%= filter.method === m ? 'selected' : '' %>><%= m %></option>
+        <% }); %>
+    </select>
+    <select name="event">
+        <option value="">Все события</option>
+        <% events.forEach(function (e) { %>
+            <option value="<%= e %>" <%= filter.event === e ? 'selected' : '' %>><%= e %></option>
+        <% }); %>
+    </select>
+    <button type="submit" class="btn">Применить</button>
+</form>
+
+<% if (entries.length === 0) { %>
+    <p class="muted">Записей нет.</p>
+<% } else { %>
+    <table>
+        <thead>
+            <tr>
+                <th>№</th><th>Время</th><th>Событие</th><th>Метод</th><th>URL</th>
+                <th>Статус</th><th>Время, мс</th><th>Пользователь</th><th>IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% entries.forEach(function (e) { %>
+                <tr>
+                    <td><%= e.id %></td>
+                    <td><%= formatDate(e.time) %></td>
+                    <td><%= e.event %></td>
+                    <td><span class="badge"><%= e.method %></span></td>
+                    <td><%= e.url %></td>
+                    <td><%= e.status %></td>
+                    <td><%= e.durationMs %></td>
+                    <td><%= e.user %></td>
+                    <td><%= e.ip %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>
+<%- include('partials/footer') %>

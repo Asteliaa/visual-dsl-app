@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title><%= item.title %></title>
-</head>
-<body>
-    <h1>Детали диаграммы</h1>
-    
-    <p><strong>ID записи:</strong> <%= item.id %></p>
-    <p><strong>Название:</strong> <%= item.title %></p>
-    
-    <p><strong>Код (DSL):</strong></p>
-    <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px;">
-        <code><%= item.dsl %></code>
-    </pre>
-    
-    <br>
-    <a href="/">Вернуться к списку</a>
-</body>
-</html>
+<%- include('partials/header') %>
+<h1>Диаграмма: <%= item.title %></h1>
+<dl>
+    <dt>ID записи</dt><dd><%= item.id %></dd>
+    <dt>Тип</dt><dd><span class="badge"><%= item.type %></span></dd>
+    <dt>Создана</dt><dd><%= formatDate(item.createdAt) %></dd>
+    <% if (item.updatedAt) { %>
+        <dt>Изменена</dt><dd><%= formatDate(item.updatedAt) %></dd>
+    <% } %>
+</dl>
+<h2>DSL-код</h2>
+<pre><code><%= item.dsl %></code></pre>
+<p><a href="/<%= authQuery %>">&larr; Вернуться к списку</a></p>
+<%- include('partials/footer') %>

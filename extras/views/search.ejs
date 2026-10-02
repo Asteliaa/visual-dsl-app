@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<h1>Поиск диаграмм</h1>
+<form method="GET" action="/search" class="filters">
+    <% if (user.isAuth) { %><input type="hidden" name="auth" value="1"><% } %>
+    <input type="text" name="q" value="<%= q %>" placeholder="Название или DSL">
+    <select name="type">
+        <option value="">Все типы</option>
+        <% types.forEach(function (t) { %>
+            <option value="<%= t %>" <%= type === t ? 'selected' : '' %>><%= t %></option>
+        <% }); %>
+    </select>
+    <button class="btn" type="submit">Найти</button>
+</form>
+<p class="muted">Найдено: <%= total %>. Страница <%= page %> из <%= pages %>.</p>
+<% if (items.length === 0) { %>
+    <p>Ничего не найдено.</p>
+<% } else { %>
+    <% items.forEach(function (item) { %>
+        <%- include('partials/card', { item: item }) %>
+    <% }); %>
+<% } %>
+<% if (page > 1) { %><a href="/search?q=<%= encodeURIComponent(q) %>&type=<%= type %>&page=<%= page - 1 %><%= authQuery ? '&auth=1' : '' %>">&larr; Назад</a><% } %>
+<% if (page < pages) { %><a href="/search?q=<%= encodeURIComponent(q) %>&type=<%= type %>&page=<%= page + 1 %><%= authQuery ? '&auth=1' : '' %>">Вперед &rarr;</a><% } %>
+<%- include('partials/footer') %>

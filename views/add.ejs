@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<h1>Новая диаграмма</h1>
+
+<% if (errors.length) { %>
+    <ul class="errors">
+        <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+    </ul>
+<% } %>
+
+<form method="POST" action="/add<%= authQuery %>">
+    <label for="title">Название</label>
+    <input type="text" id="title" name="title" value="<%= form.title %>">
+
+    <label for="type">Тип диаграммы</label>
+    <select id="type" name="type">
+        <% types.forEach(function (t) { %>
+            <option value="<%= t %>" <%= form.type === t ? 'selected' : '' %>><%= t %></option>
+        <% }); %>
+    </select>
+
+    <label for="dsl">DSL-код</label>
+    <textarea id="dsl" name="dsl" rows="6"><%= form.dsl %></textarea>
+
+    <button type="submit" class="btn">Добавить</button>
+    <a href="/<%= authQuery %>">Отмена</a>
+</form>
+<%- include('partials/footer') %>

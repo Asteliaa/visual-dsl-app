@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Авторизация</title>
-</head>
-<body>
-    <h1>Доступ запрещен</h1>
-    <p>Для добавления диаграмм необходимо авторизоваться.</p>
-    <a href="/add?auth=1">Войти как администратор</a>
-</body>
-</html>
+<%- include('partials/header') %>
+<h1>Доступ запрещен</h1>
+<p>Для добавления диаграмм необходимо авторизоваться. Авторизация имитируется параметром <code>?auth=1</code>.</p>
+<p>
+    <a class="btn" href="/add?auth=1">Войти как администратор</a>
+    <a href="/">Продолжить как гость</a>
+</p>
+<%- include('partials/footer') %>

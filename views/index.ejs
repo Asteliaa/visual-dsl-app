@@ -1,7 +1,24 @@
+<%- include('partials/header') %>
 <h1>Список диаграмм</h1>
-<a href="/add?auth=1">Добавить новую</a>
-<ul>
-    <% items.forEach(function(item) { %>
-        <li><a href="/item/<%= item.id %>"><%= item.title %></a></li>
-    <% }); %>
-</ul>
+<p><a class="btn" href="/add<%= authQuery %>">Добавить диаграмму</a></p>
+
+<% if (items.length === 0) { %>
+    <p class="muted">Диаграмм пока нет.</p>
+<% } else { %>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Название</th><th>Тип</th><th>Создана</th></tr>
+        </thead>
+        <tbody>
+            <% items.forEach(function (item) { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><a href="/item/<%= item.id %><%= authQuery %>"><%= item.title %></a></td>
+                    <td><span class="badge"><%= item.type %></span></td>
+                    <td><%= formatDate(item.createdAt) %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>
+<%- include('partials/footer') %>

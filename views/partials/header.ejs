@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | VisualDSL</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" href="/<%= authQuery %>">VisualDSL</a>
+    <nav>
+        <a href="/<%= authQuery %>">Диаграммы</a>
+        <a href="/add<%= authQuery %>">Добавить</a>
+        <a href="/logs<%= authQuery %>">Журнал</a>
+    </nav>
+    <span class="user">Пользователь: <strong><%= user.name %></strong>
+        <% if (!user.isAuth) { %><a href="/login">Войти</a><% } %>
+    </span>
+</header>
+<main class="container">
